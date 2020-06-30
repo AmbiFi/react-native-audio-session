@@ -132,7 +132,14 @@ RCT_EXPORT_METHOD(init:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectB
 
 RCT_EXPORT_METHOD(category:(RCTResponseSenderBlock)callback)
 {
-    callback(@[[AVAudioSession sharedInstance].category]);
+    NSString *cat = [AVAudioSession sharedInstance].category;
+    NSArray *temp = [_categories allKeysForObject:cat];
+    NSString *key = [temp lastObject];
+    if (key) {
+        callback(@[key]);
+    } else {
+        callback(@[]);
+    }
 }
 
 RCT_EXPORT_METHOD(options:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
@@ -141,11 +148,19 @@ RCT_EXPORT_METHOD(options:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
     NSLog(@"Current audio session options bitmask %lu", options);
     NSArray *optionsArray = [self convertOptionsBitmaskToArray: options];
     resolve(optionsArray);
+
 }
 
 RCT_EXPORT_METHOD(mode:(RCTResponseSenderBlock)callback)
 {
-    callback(@[[AVAudioSession sharedInstance].mode]);
+	NSString *mode = [AVAudioSession sharedInstance].mode;
+    NSArray *temp = [_modes allKeysForObject:mode];
+    NSString *key = [temp lastObject];
+    if (key) {
+        callback(@[key]);
+    } else {
+        callback(@[]);
+    }
 }
 
 RCT_EXPORT_METHOD(availableCategories:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
@@ -173,6 +188,7 @@ RCT_EXPORT_METHOD(availableModes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPr
     }
     
     resolve(availableModesArray);
+
 }
 
 RCT_EXPORT_METHOD(setActive:(BOOL)active resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
@@ -212,6 +228,7 @@ RCT_EXPORT_METHOD(setCategory:(NSString *)category options:(NSArray *)options re
         reject(@"setCategory", @"Could not set category.", error);
     }
 }
+
 
 RCT_EXPORT_METHOD(setMode:(NSString *)mode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -259,6 +276,8 @@ RCT_EXPORT_METHOD(setCategoryAndMode:(NSString *)category mode:(NSString *)mode 
         reject(@"setCategoryAndMode", @"Could not set category and mode.", error);
     }
 }
+
+
 
 
 /*
